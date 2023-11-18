@@ -1,0 +1,74 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  }
+  
+  h1 {
+    text-align: center;
+    /* Additional styles for the h1 element if needed */
+  }
+
+  .custom-file-upload {
+    display: inline-block;
+    margin-top: 20px; /* Adjust spacing between h1 and button */
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+  }
+  
+  .custom-file-upload:hover {
+    background-color: #0056b3;
+  }
+
+  .button-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 40px;
+  }
+
+  .dropdown-btn {
+    display: inline-block;
+    margin-top: 20px; /* Adjust spacing between h1 and button */
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+  }
+
+  .dropdown-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .dropdown-content {
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content span {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+  }
+  
+  .dropdown-content span:hover {
+    background-color: #007bff;
+    color: #f9f9f9;
+  }

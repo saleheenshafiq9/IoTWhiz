@@ -32,12 +32,3 @@ def detect_api_usage(folder_path):
                 print(f"Error processing file: {file_name}. Skipping. Error: {e}")
 
     return api_calls, total_api_usages
-
-# Provide the path to your Android project folder
-project_folder = 'goodtime'
-detected_apis, total_usages = detect_api_usage(project_folder)
-print("Detected API usage:")
-for api_call in detected_apis:
-    print(api_call)
-
-print(f"Total API usages: {total_usages}")

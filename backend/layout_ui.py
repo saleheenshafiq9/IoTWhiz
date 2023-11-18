@@ -40,20 +40,3 @@ def analyze_layout_files(layout_files):
                     components["Nested Layouts"].add((file_path, line.strip()))
 
     return components
-
-# Provide the path to your Android project folder
-project_folder = 'FillUp'
-layout_files = explore_layout_files(project_folder)
-detected_components = analyze_layout_files(layout_files)
-
-# Print categorized UI components including layout types and nested layouts
-for category, components in detected_components.items():
-    print(f"\n{category}:")
-    if category in ["Nested Layouts", "Layout Types"]:
-        for component in components:
-            file_path, component_value = component
-            print(f"File: {file_path}, {category[:-1]}: {component_value}")
-    else:
-        for component in components:
-            file_path, line_number, component_name = component
-            print(f"File: {file_path}, Line {line_number}: Detected {component_name}")

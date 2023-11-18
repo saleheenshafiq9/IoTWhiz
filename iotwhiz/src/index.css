@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  font-family: 'Kdam Thmor Pro', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: rgb(52,63,62);
+  background: linear-gradient(90deg, rgba(52,63,62,1) 0%, rgba(29,51,84,1) 84%);
+  color: white;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

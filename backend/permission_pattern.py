@@ -20,12 +20,3 @@ def detect_permissions(folder_path):
                             total_permissions += len(matches)
 
     return permission_lines, total_permissions
-
-# Provide the path to your Android project folder
-project_folder = 'goodtime'
-detected_permissions, total_permissions = detect_permissions(project_folder)
-print("Detected permissions:")
-for permission_line in detected_permissions:
-    print(permission_line)
-
-print(f"Total permissions found: {total_permissions}")

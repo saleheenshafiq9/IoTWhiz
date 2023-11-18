@@ -23,12 +23,3 @@ def detect_dynamic_code_loading(folder_path):
                 print(f"Error processing file: {file_name}. Skipping. Error: {e}")
 
     return dynamic_loading_lines, total_dynamic_usages
-
-# Provide the path to your Android project folder
-project_folder = 'goodtime'
-detected_dynamic_loading, total_usages = detect_dynamic_code_loading(project_folder)
-print("Detected dynamic code loading:")
-for line in detected_dynamic_loading:
-    print(line)
-
-print(f"Total dynamic code loading usages: {total_usages}")
