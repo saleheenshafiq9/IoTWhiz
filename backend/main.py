@@ -6,6 +6,7 @@ from dynamic_code_loading import detect_dynamic_code_loading
 from permission_pattern import detect_permissions
 from layout_ui import explore_layout_files, analyze_layout_files
 from jadx import decompile_apk
+from APK_download import download_apk
 
 app = FastAPI()
 
@@ -23,6 +24,10 @@ class FolderPath(BaseModel):
 
 class APKFile(BaseModel):
     file_name: str
+
+class APIKeySHA256(BaseModel):
+    api_key: str
+    sha256: str
 
 @app.post("/upload-folder/")
 async def upload_folder(folder_path: FolderPath):
@@ -52,5 +57,39 @@ async def analyze_layout(folder_path: FolderPath):
 @app.post("/upload-apk/")
 async def upload_apk(apk_file: APKFile):
     file_name = apk_file.file_name
-    decompile_apk(file_name,'source_codes')
-    return {"file_name": file_name, "message": "APK file name received successfully"}
+    output_dir = decompile_apk(file_name)
+    return {"file_name": file_name, "message": "APK file name received successfully", "output_directory": output_dir}
+
+@app.post("/receive-api-key-sha256/")
+async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
+    received_api_key = api_key_sha256.api_key
+    received_sha256 = api_key_sha256.sha256
+
+    print("I am here")
+
+    filename = download_apk(received_api_key, received_sha256)
+    
+    return {
+        "message": "API Key and SHA256 received successfully",
+        "received_api_key": received_api_key,
+        "received_sha256": received_sha256,
+        "download_file": filename
+    }
+
+@app.post("/receive-api-key-sha256-get-source-code/")
+async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
+    received_api_key = api_key_sha256.api_key
+    received_sha256 = api_key_sha256.sha256
+
+    print("I am here too")
+
+    filename = download_apk(received_api_key, received_sha256)
+    output_dir = decompile_apk(filename)
+    
+    return {
+        "message": "API Key and SHA256 received successfully",
+        "received_api_key": received_api_key,
+        "received_sha256": received_sha256,
+        "download_file": filename,
+        "output_directory": output_dir
+    }
