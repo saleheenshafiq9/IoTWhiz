@@ -13,10 +13,3 @@ def decompile_apk(apk_path, output_dir):
         print("Decompilation successful.")
     except subprocess.CalledProcessError as e:
         print(f"Error during decompilation: {e}")
-
-if __name__ == "__main__":
-    # Replace with the path to your APK and the desired output directory
-    apk_path = "itesmartplug.apk"
-    output_directory = "backend"
-
-    decompile_apk(apk_path, output_directory)

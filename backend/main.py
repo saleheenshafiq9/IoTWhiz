@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from api_usage import detect_api_usage
 from dynamic_code_loading import detect_dynamic_code_loading
 from permission_pattern import detect_permissions
-from layout_ui import explore_layout_files, analyze_layout_files  # Import functions from layout_analyzer.py
+from layout_ui import explore_layout_files, analyze_layout_files
+from jadx import decompile_apk
 
 app = FastAPI()
 
@@ -19,6 +20,9 @@ app.add_middleware(
 
 class FolderPath(BaseModel):
     folder_path: str
+
+class APKFile(BaseModel):
+    file_name: str
 
 @app.post("/upload-folder/")
 async def upload_folder(folder_path: FolderPath):
@@ -44,3 +48,9 @@ async def analyze_layout(folder_path: FolderPath):
 
     # Return the analyzed components back to the frontend or perform further processing
     return detected_components
+
+@app.post("/upload-apk/")
+async def upload_apk(apk_file: APKFile):
+    file_name = apk_file.file_name
+    decompile_apk(file_name,'source_codes')
+    return {"file_name": file_name, "message": "APK file name received successfully"}

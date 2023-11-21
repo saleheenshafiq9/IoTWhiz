@@ -1,8 +1,10 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect,useRef} from 'react'
 import './Home.css'
 
 const Home = () => {
   const [showOptions, setShowOptions] = useState(false);
+  const dropdownRef = useRef(null);
+  const apkInputRef = useRef(null);
 
     const handleFolderUpload = (event) => {
         const folderPath = event.target.files[0].webkitRelativePath.split('/')[0];
@@ -44,12 +46,54 @@ const Home = () => {
 
       const handleDecompileAPK = (option) => {
         if (option === 'upload') {
-          // Logic for uploading APK
+          apkInputRef.current.click(); // Trigger file selection dialog for APK
         } else if (option === 'download') {
           // Logic for downloading from AndroZoo
         }
         setShowOptions(false); // Hide the dropdown after selecting an option
       };
+
+      const handleAPKFileUpload = (event) => {
+        const apkFile = event.target.files[0];
+        if (apkFile) {
+          const data = { file_name: apkFile.name };
+      
+          fetch('http://localhost:8000/upload-apk/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Response from backend:', data);
+              // Handle the response from the backend
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              // Handle errors
+            });
+        }
+      };
+
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setShowOptions(false);
+        }
+      };
+
+      useEffect(() => {
+        if (showOptions) {
+          document.addEventListener('click', handleClickOutside);
+        } else {
+          document.removeEventListener('click', handleClickOutside);
+        }
+    
+        return () => {
+          document.removeEventListener('click', handleClickOutside);
+        };
+      }, [showOptions]);
       
   return (
     <div className='content'>
@@ -63,8 +107,8 @@ const Home = () => {
       <span>Visualizations unveil app differences, guiding efficient development choices.</span>
     </p>
     <div className="button-container">
-      <div className="dropdown">
-        <button className="dropdown-btn" onClick={() => setShowOptions(!showOptions)}>Decompile APK</button>
+      <div className="dropdown" ref={dropdownRef}>
+        <label className="dropdown-btn" onClick={() => setShowOptions(!showOptions)}>Decompile APK</label>
         {showOptions && (
           <div className="dropdown-content">
             <span onClick={() => handleDecompileAPK('upload')}>Upload APK</span>
@@ -83,6 +127,17 @@ const Home = () => {
         style={{ display: 'none' }}
       />
     </div>
+          <label htmlFor="apk-upload" className="custom-file-upload" style={{ display: 'none' }}>
+            Select APK File
+          </label>
+          <input
+            id="apk-upload"
+            type="file"
+            accept=".apk"
+            ref={apkInputRef}
+            onChange={handleAPKFileUpload}
+            style={{ display: 'none' }}
+          />
   </div>
   )
 }
