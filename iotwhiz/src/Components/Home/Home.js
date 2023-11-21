@@ -12,6 +12,8 @@ const Home = () => {
   const [downloading, setDownloading] = useState(false); // New state for download status
   const [downloadSuccess, setDownloadSuccess] = useState(false); // New state for download success message
   const [decompilationSuccessful, setDecompilationSuccessful] = useState(false);
+  const [uploadAPK, setUploadAPK] = useState(false);
+  const [decompileAPK, setDecompileAPK] = useState(false);
 
     const handleFolderUpload = (event) => {
         const folderPath = event.target.files[0].webkitRelativePath.split('/')[0];
@@ -145,6 +147,7 @@ const Home = () => {
       const handleAPKFileUpload = (event) => {
         const apkFile = event.target.files[0];
         if (apkFile) {
+          setUploadAPK(true);
           const data = { file_name: apkFile.name };
       
           fetch('http://localhost:8000/upload-apk/', {
@@ -157,11 +160,17 @@ const Home = () => {
             .then(response => response.json())
             .then(data => {
               console.log('Response from backend:', data);
+              setUploadAPK(false);
               // Handle the response from the backend
+              setDecompileAPK(true); // Show 'Download Successful!' message
+                setTimeout(() => {
+                  setDecompileAPK(false); 
+                }, 3000); // Hide after 3 seconds (adjust as needed)
             })
             .catch(error => {
               console.error('Error:', error);
               // Handle errors
+              setUploadAPK(false);
             });
         }
       };
@@ -216,6 +225,13 @@ const Home = () => {
         style={{ display: 'none' }}
       />
     </div>
+        {uploadAPK && <p style={{
+          marginTop: "40px"
+        }}>Uploading & Decompiling...</p>} {/* Show 'Downloading...' if downloading */}
+        {decompileAPK && <p style={{
+          color: '#C3EB78',
+          marginTop: "40px"
+        }}>Decompilation Successful!</p>} {/* Show 'Download Successful!' message */}
           <label htmlFor="apk-upload" className="custom-file-upload" style={{ display: 'none' }}>
             Select APK File
           </label>
