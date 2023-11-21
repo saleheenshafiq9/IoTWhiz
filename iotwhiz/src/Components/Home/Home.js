@@ -9,6 +9,9 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [sha256, setSha256] = useState('');
+  const [downloading, setDownloading] = useState(false); // New state for download status
+  const [downloadSuccess, setDownloadSuccess] = useState(false); // New state for download success message
+  const [decompilationSuccessful, setDecompilationSuccessful] = useState(false);
 
     const handleFolderUpload = (event) => {
         const folderPath = event.target.files[0].webkitRelativePath.split('/')[0];
@@ -67,7 +70,8 @@ const Home = () => {
       const handleDownloadAPK = () => {
         // Logic for downloading APK using apiKey and sha256 values
         const data = { api_key: apiKey, sha256: sha256 };
-        console.log(data)
+        // console.log(data)
+        setDownloading(true); // Start download, set state to true
         fetch('http://localhost:8000/receive-api-key-sha256/', {
           method: 'POST',
           headers: {
@@ -79,17 +83,23 @@ const Home = () => {
           .then(data => {
             console.log('Response from backend:', data);
             // Handle the response from the backend
+            setDownloading(false); // End download, set state to false after receiving the response
+            setDownloadSuccess(true); // Show 'Download Successful!' message
+            setTimeout(() => {
+              setDownloadSuccess(false); // Hide 'Download Successful!' after a certain duration
+            }, 3000); // Hide after 3 seconds (adjust as needed)
           })
           .catch(error => {
             console.error('Error:', error);
             // Handle errors
+            setDownloading(false); // End download, set state to false in case of an error
           });
       };
       
       const handleGetSourceCode = () => {
         // Logic for getting source code using apiKey and sha256 values
+        setDownloading(true); // Start download, set state to true
         const data = { api_key: apiKey, sha256: sha256 };
-      
         fetch('http://localhost:8000/receive-api-key-sha256-get-source-code/', {
           method: 'POST',
           headers: {
@@ -101,10 +111,22 @@ const Home = () => {
           .then(data => {
             console.log('Response from backend:', data);
             // Handle the response from the backend
+            setDownloading(false); // End download, set state to false after receiving the response
+            setDownloadSuccess(true); // Show 'Download Successful!' message
+            setTimeout(() => {
+              setDownloadSuccess(false);
+              setTimeout(() => {
+                setDecompilationSuccessful(true);
+                setTimeout(() => {
+                  setDecompilationSuccessful(false); // Reset to false after 3 seconds
+                }, 3000); 
+              }, 3000);
+            }, 3000); // Hide after 3 seconds (adjust as needed)
           })
           .catch(error => {
             console.error('Error:', error);
             // Handle errors
+            setDownloading(false); // End download, set state to false in case of an error
           });
       };
       
@@ -243,6 +265,13 @@ const Home = () => {
             Get Source Code
           </button>
         </div>
+        {downloading && <p>Downloading...</p>} {/* Show 'Downloading...' if downloading */}
+        {downloadSuccess && <p style={{
+          color: '#C3EB78'
+        }}>Download Successful!</p>} {/* Show 'Download Successful!' message */}
+        {decompilationSuccessful && <p style={{
+          color: '#C3EB78'
+        }}>Decompilation Successful!</p>} {/* Show 'Download Successful!' message */}
       </Modal>
   </div>
   )

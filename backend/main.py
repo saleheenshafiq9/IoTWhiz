@@ -65,7 +65,7 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     received_api_key = api_key_sha256.api_key
     received_sha256 = api_key_sha256.sha256
 
-    print("I am here")
+    print("Invoked /receive-api-key-sha256/")
 
     filename = download_apk(received_api_key, received_sha256)
     
@@ -81,15 +81,17 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     received_api_key = api_key_sha256.api_key
     received_sha256 = api_key_sha256.sha256
 
-    print("I am here too")
+    print("Invoked /receive-api-key-sha256-get-source-code/")
 
     filename = download_apk(received_api_key, received_sha256)
     output_dir = decompile_apk(filename)
-    
-    return {
+
+    response_data = {
         "message": "API Key and SHA256 received successfully",
         "received_api_key": received_api_key,
         "received_sha256": received_sha256,
         "download_file": filename,
-        "output_directory": output_dir
+        "output_directory": output_dir,
     }
+    
+    return response_data
