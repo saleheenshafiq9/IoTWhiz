@@ -4,6 +4,7 @@ import re
 def detect_permissions(folder_path):
     permission_lines = set()
     total_permissions = 0
+    parent_folder = "goodtime"  # Replace 'goodtime' with the actual parent folder name to be removed
 
     for root, _, files in os.walk(folder_path):
         for file_name in files:
@@ -16,7 +17,9 @@ def detect_permissions(folder_path):
                         permission_pattern = r'<uses-permission\s+android:name="android\.permission\.\w+"'
                         matches = re.findall(permission_pattern, line)
                         if matches:
-                            permission_lines.add(f"{manifest_file}:{line_number}: {line.strip()}")
+                            # Removing the parent folder name while retaining the subfolder structure
+                            relative_path = os.path.relpath(manifest_file, parent_folder)
+                            permission_lines.add(f"{relative_path}:{line_number}: {line.strip()}")
                             total_permissions += len(matches)
 
     return permission_lines, total_permissions

@@ -17,7 +17,9 @@ def detect_dynamic_code_loading(folder_path):
                             dynamic_loading_pattern = r'DexClassLoader\s*\(\s*.*\s*,\s*.*\s*,\s*.*\s*\)'
                             matches = re.findall(dynamic_loading_pattern, line)
                             if matches:
-                                dynamic_loading_lines.add(f"{file_path}:{line_number}: {line.strip()}")
+                                # Extracting only the file name from the full file path
+                                file_name_only = os.path.basename(file_path)
+                                dynamic_loading_lines.add(f"{file_name_only}:{line_number}: {line.strip()}")
                                 total_dynamic_usages += len(matches)
             except Exception as e:
                 print(f"Error processing file: {file_name}. Skipping. Error: {e}")
