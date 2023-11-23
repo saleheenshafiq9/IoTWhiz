@@ -1,6 +1,7 @@
 import React, {useState,useEffect,useRef} from 'react'
 import Modal from 'react-modal';
 import './Home.css'
+import Analysis from '../Analysis/Analysis';
 
 const Home = () => {
   const [showOptions, setShowOptions] = useState(false);
@@ -14,6 +15,8 @@ const Home = () => {
   const [decompilationSuccessful, setDecompilationSuccessful] = useState(false);
   const [uploadAPK, setUploadAPK] = useState(false);
   const [decompileAPK, setDecompileAPK] = useState(false);
+  const [genericAnalysis, setGenericAnalysis] = useState(null)
+  const [layoutAnalysis, setLayoutAnalysis] = useState(null)
 
     const handleFolderUpload = (event) => {
         const folderPath = event.target.files[0].webkitRelativePath.split('/')[0];
@@ -29,6 +32,7 @@ const Home = () => {
             .then(data => {
                 console.log(data);
                 // Handle the response from the backend
+                setGenericAnalysis(data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -46,6 +50,7 @@ const Home = () => {
               .then(data => {
                   console.log(data);
                   // Handle the response from the backend
+                  setLayoutAnalysis(data)
               })
               .catch(error => {
                   console.error('Error:', error);
@@ -194,6 +199,8 @@ const Home = () => {
       }, [showOptions]);
       
   return (
+    <>
+    {!genericAnalysis && !layoutAnalysis &&
     <div className='content'>
     <img src='./city.png' alt='city' width='350px' style={{ marginTop: '40px' }} />
     <h1>
@@ -232,6 +239,7 @@ const Home = () => {
           color: '#C3EB78',
           marginTop: "40px"
         }}>Decompilation Successful!</p>} {/* Show 'Download Successful!' message */}
+
           <label htmlFor="apk-upload" className="custom-file-upload" style={{ display: 'none' }}>
             Select APK File
           </label>
@@ -290,7 +298,13 @@ const Home = () => {
         }}>Decompilation Successful!</p>} {/* Show 'Download Successful!' message */}
       </Modal>
   </div>
-  )
+    }
+
+  {genericAnalysis && layoutAnalysis && (
+      <Analysis genericAnalysis={genericAnalysis} layoutAnalysis={layoutAnalysis} />
+    )}
+    </>
+    )
 }
 
 export default Home

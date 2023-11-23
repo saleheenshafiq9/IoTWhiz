@@ -1,0 +1,39 @@
+.analysis-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .accordion {
+    width: 80%;
+    max-width: 1000px; /* Limit the width for smaller screens */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px auto;
+    background-color: #f5f5f5; /* Light background color */
+  }
+  
+  .accordion h2 {
+    margin-bottom: 5px;
+    color: #0056b3;
+    font-weight: bold;
+  }
+  
+  .accordion ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    color: rgb(52, 63, 62);
+  }
+  
+  .accordion ul li {
+    margin-bottom: 5px;
+  }
+  
+  .accordion p {
+    margin-top: 10px;
+    font-style: italic;
+  }
+  
