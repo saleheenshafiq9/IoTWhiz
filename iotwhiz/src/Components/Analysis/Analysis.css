@@ -1,19 +1,21 @@
 .analysis-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
-  }
-  
-  .accordion {
-    width: 80%;
-    max-width: 1000px; /* Limit the width for smaller screens */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px auto;
-    background-color: #f5f5f5; /* Light background color */
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align the accordion to the left */
+  margin-top: 30px;
+}
+
+.accordion {
+  width: 80%;
+  max-width: 1000px; /* Limit the width for smaller screens */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f5f5f5; /* Light background color */
+  margin: 10px 0; /* Adjust margin as needed */
+  margin-left: 200px;
+}
+
   
   .accordion h2 {
     margin-bottom: 5px;
@@ -35,5 +37,25 @@
   .accordion p {
     margin-top: 10px;
     font-style: italic;
+  }
+
+  .index {
+    color: #0056b3;
+  }
+  
+  .filePath {
+    color: green;
+  }
+  
+  .lineNumber {
+    color: red;
+  }
+
+  .count {
+    color: red
+  }
+
+  .widgetType, .layoutType, .layoutContent {
+    color: #0056b3
   }
   

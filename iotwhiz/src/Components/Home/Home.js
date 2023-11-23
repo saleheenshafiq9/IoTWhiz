@@ -17,8 +17,10 @@ const Home = () => {
   const [decompileAPK, setDecompileAPK] = useState(false);
   const [genericAnalysis, setGenericAnalysis] = useState(null)
   const [layoutAnalysis, setLayoutAnalysis] = useState(null)
+  const [uploadProject, setUploadProject] = useState(false)
 
     const handleFolderUpload = (event) => {
+        setUploadProject(true);
         const folderPath = event.target.files[0].webkitRelativePath.split('/')[0];
         console.log(folderPath); // Displays the first part of the folder path
         fetch('http://localhost:8000/upload-folder/', {
@@ -51,10 +53,12 @@ const Home = () => {
                   console.log(data);
                   // Handle the response from the backend
                   setLayoutAnalysis(data)
+                  setUploadProject(false);
               })
               .catch(error => {
                   console.error('Error:', error);
                   // Handle errors
+                  setUploadProject(false);
               });
       };
 
@@ -203,7 +207,10 @@ const Home = () => {
     {!genericAnalysis && !layoutAnalysis &&
     <div className='content'>
     <img src='./city.png' alt='city' width='350px' style={{ marginTop: '40px' }} />
-    <h1>
+    <h1 style={{
+      marginTop: "40px",
+      marginBottom: "40px"
+    }}>
       IoTWhiz
     </h1>
     <p className='tool-summary'>
@@ -239,6 +246,9 @@ const Home = () => {
           color: '#C3EB78',
           marginTop: "40px"
         }}>Decompilation Successful!</p>} {/* Show 'Download Successful!' message */}
+        {uploadProject && <p style={{
+          marginTop: "40px"
+        }}>Decompiling...</p>} {/* Show 'Downloading...' if downloading */}
 
           <label htmlFor="apk-upload" className="custom-file-upload" style={{ display: 'none' }}>
             Select APK File
@@ -301,7 +311,16 @@ const Home = () => {
     }
 
   {genericAnalysis && layoutAnalysis && (
-      <Analysis genericAnalysis={genericAnalysis} layoutAnalysis={layoutAnalysis} />
+    <div>
+      <div className='row'>
+        <div className='col-8'>
+          <Analysis genericAnalysis={genericAnalysis} layoutAnalysis={layoutAnalysis} />
+        </div>
+        <div className='col-4'>
+
+        </div>
+      </div>
+    </div>
     )}
     </>
     )

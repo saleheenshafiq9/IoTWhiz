@@ -11,9 +11,17 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       title: `Detected APIs (${genericAnalysis.total_usages})`,
       content: (
         <ul>
-          {genericAnalysis.detected_apis.map((api, index) => (
-            <li key={index}>{api}</li>
-          ))}
+          {genericAnalysis.detected_apis.map((api, index) => {
+            const [filePath, lineNumber, code] = api.split(':');
+            return (
+              <li key={index}>
+                <span className="index">{index + 1}:</span>{' '}
+                <span className="filePath">{filePath}:</span>
+                <span className="lineNumber">{lineNumber}:</span> <br />
+                <span className="code">{code}</span>
+              </li>
+            );
+          })}
         </ul>
       ),
       total: genericAnalysis.total_usages,
@@ -22,9 +30,17 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       title: `Detected Dynamic Loading (${genericAnalysis.total_dynamic_usages})`,
       content: (
         <ul>
-          {genericAnalysis.detected_dynamic_loading.map((dynamic, index) => (
-            <li key={index}>{dynamic}</li>
-          ))}
+          {genericAnalysis.detected_dynamic_loading.map((dynamic, index) => {
+            const [filePath, lineNumber, code] = dynamic.split(':');
+            return (
+              <li key={index}>
+                <span className="index">{index + 1}:</span>{' '}
+                <span className="filePath">{filePath}:</span>
+                <span className="lineNumber">{lineNumber}:</span> <br />
+                <span className="code">{code}</span>
+              </li>
+            );
+          })}
         </ul>
       ),
       total: genericAnalysis.total_dynamic_usages,
@@ -33,47 +49,79 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       title: `Detected Permissions (${genericAnalysis.total_permissions})`,
       content: (
         <ul>
-          {genericAnalysis.detected_permissions.map((permission, index) => (
-            <li key={index}>{permission}</li>
-          ))}
+          {genericAnalysis.detected_permissions.map((permission, index) => {
+            const firstColonIndex = permission.indexOf(':');
+            const secondColonIndex = permission.indexOf(':', firstColonIndex + 1);
+            
+            const filePath = permission.substring(0, firstColonIndex);
+            const lineNumber = permission.substring(firstColonIndex + 1, secondColonIndex);
+            const code = permission.substring(secondColonIndex + 1);
+    
+            return (
+              <li key={index}>
+                <span className="index">{index + 1}:</span>{' '}
+                <span className="filePath">{filePath}:</span>
+                <span className="lineNumber">{lineNumber}:</span> <br />
+                <span className="code">{code}</span>
+              </li>
+            );
+          })}
         </ul>
       ),
       total: genericAnalysis.total_permissions,
-    },
+    },      
     {
       title: 'Widgets and Views',
       content: (
         <ul>
           {layoutAnalysis.Widgets_and_Views.map((widget, index) => (
             <li key={index}>
-              <span>Widget or View Path:</span> {widget[0]}
-              <span>Count:</span> {widget[1]}
-              <span>Widget Type:</span> {widget[2]}
+              <span className="filePath">Widget or View Path:</span> {widget[0]} <br />
+              <span className="count">Count:</span> {widget[1]} <br />
+              <span className="widgetType">Widget Type:</span> {widget[2]} <br />
             </li>
           ))}
         </ul>
       ),
-    },
+    },    
     {
       title: 'Layout Types',
       content: (
         <ul>
-          {layoutAnalysis.Layout_Types.map((layoutType, index) => (
-            <li key={index}>{layoutType}</li>
-          ))}
+          {layoutAnalysis.Layout_Types.map((layoutType, index) => {
+            if (Array.isArray(layoutType) && layoutType.length === 2) {
+              const [layout, filePath] = layoutType;
+              return (
+                <li key={index}>
+                  <span className="layoutType">Layout Type:</span> {layout} <br />
+                  <span className="filePath">File Path:</span> {filePath}
+                </li>
+              );
+            }
+            return null;
+          })}
         </ul>
       ),
-    },
+    },    
     {
       title: 'Nested Layouts',
       content: (
         <ul>
-          {layoutAnalysis.Nested_Layouts.map((nestedLayout, index) => (
-            <li key={index}>{nestedLayout}</li>
-          ))}
+          {layoutAnalysis.Nested_Layouts.map((nestedLayout, index) => {
+            if (Array.isArray(nestedLayout) && nestedLayout.length === 2) {
+              const [filePath, layoutContent] = nestedLayout;
+              return (
+                <li key={index}>
+                  <span className="filePath">File Path:</span> {filePath} <br />
+                  <span className="layoutContent">Layout Content:</span> {layoutContent}
+                </li>
+              );
+            }
+            return null;
+          })}
         </ul>
       ),
-    },
+    }    
   ];
 
   return (
@@ -99,7 +147,9 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
           >
             <div className="accordion-body">
               {item.content}
-              {item.total && <p>Total: {item.total}</p>}
+              {item.total && <p style={{
+                color: '#454355'
+              }}>Total: {item.total}</p>}
             </div>
           </div>
         </div>

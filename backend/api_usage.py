@@ -10,6 +10,7 @@ def detect_api_usage(folder_path):
             try:
                 if file_name.endswith('.java'):
                     file_path = os.path.join(root, file_name)
+                    relative_path = os.path.relpath(file_path, folder_path)
                     with open(file_path, 'r', errors='ignore') as file:
                         lines = file.readlines()
                         line_number = 0
@@ -26,7 +27,7 @@ def detect_api_usage(folder_path):
                             for pattern in api_patterns:
                                 matches = re.findall(pattern, content)
                                 if matches:
-                                    api_calls.add(f"{file_path}:{line_number}: {content}")
+                                    api_calls.add(f"{relative_path}:{line_number}: {content}")
                                     total_api_usages += len(matches)
             except Exception as e:
                 print(f"Error processing file: {file_name}. Skipping. Error: {e}")
