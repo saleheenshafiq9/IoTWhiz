@@ -10,18 +10,16 @@ def explore_layout_files(folder_path):
                 layout_files.append(file_path)
     return layout_files
 
-def analyze_layout_files(layout_files):
+def analyze_layout_files(layout_files, folder_path):
     components = {
         "Widgets_and_Views": set(),
         "Layout_Types": set(),
         "Nested_Layouts": set()
     }
 
-    parent_folder = "goodtime"  # Replace 'goodtime' with the actual parent folder name to be removed
-
     for file_path in layout_files:
         # Removing the parent folder name while retaining the subfolder structure
-        relative_path = os.path.relpath(file_path, parent_folder)
+        relative_path = os.path.relpath(file_path, folder_path)
         file_name_only = os.path.basename(file_path)  # Extracting only the file name
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()

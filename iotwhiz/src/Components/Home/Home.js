@@ -2,6 +2,7 @@ import React, {useState,useEffect,useRef} from 'react'
 import Modal from 'react-modal';
 import './Home.css'
 import Analysis from '../Analysis/Analysis';
+import CountAnalysis from '../Analysis/CountAnalysis';
 
 const Home = () => {
   const [showOptions, setShowOptions] = useState(false);
@@ -16,6 +17,7 @@ const Home = () => {
   const [uploadAPK, setUploadAPK] = useState(false);
   const [decompileAPK, setDecompileAPK] = useState(false);
   const [genericAnalysis, setGenericAnalysis] = useState(null)
+  const [lineAnalysis, setLineAnalysis] = useState(null)
   const [layoutAnalysis, setLayoutAnalysis] = useState(null)
   const [uploadProject, setUploadProject] = useState(false)
 
@@ -35,6 +37,24 @@ const Home = () => {
                 console.log(data);
                 // Handle the response from the backend
                 setGenericAnalysis(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors
+            });
+
+            fetch('http://localhost:8000/loc-class-method/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ folder_path: folderPath }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Handle the response from the backend
+                setLineAnalysis(data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -204,7 +224,7 @@ const Home = () => {
       
   return (
     <>
-    {!genericAnalysis && !layoutAnalysis &&
+    {!genericAnalysis && !layoutAnalysis && !lineAnalysis &&
     <div className='content'>
     <img src='./city.png' alt='city' width='350px' style={{ marginTop: '40px' }} />
     <h1 style={{
@@ -310,14 +330,14 @@ const Home = () => {
   </div>
     }
 
-  {genericAnalysis && layoutAnalysis && (
+  {genericAnalysis && layoutAnalysis && lineAnalysis && (
     <div>
       <div className='row'>
         <div className='col-8'>
           <Analysis genericAnalysis={genericAnalysis} layoutAnalysis={layoutAnalysis} />
         </div>
         <div className='col-4'>
-
+          <CountAnalysis lineAnalysis={lineAnalysis} />
         </div>
       </div>
     </div>

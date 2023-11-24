@@ -7,6 +7,8 @@ from permission_pattern import detect_permissions
 from layout_ui import explore_layout_files, analyze_layout_files
 from jadx import decompile_apk
 from APK_download import download_apk
+from count_lines import count_lines_of_code
+from count_classes import count_classes_methods
 
 app = FastAPI()
 
@@ -49,7 +51,7 @@ async def analyze_layout(folder_path: FolderPath):
     layout_files = explore_layout_files(received_folder_path)
 
     # Use the layout files to analyze UI components with analyze_layout_files function
-    detected_components = analyze_layout_files(layout_files)
+    detected_components = analyze_layout_files(layout_files, received_folder_path)
 
     # Return the analyzed components back to the frontend or perform further processing
     return detected_components
@@ -95,3 +97,16 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     }
     
     return response_data
+
+@app.post("/loc-class-method/")
+async def upload_folder(folder_path: FolderPath):
+    received_folder_path = folder_path.folder_path
+
+    lines_of_code, skipped_files = count_lines_of_code(received_folder_path)
+    classes, methods = count_classes_methods(received_folder_path)
+
+    return {
+            'lines_of_code': lines_of_code,
+            'number_of_classes': classes,
+            'number_of_methods': methods,
+        }
