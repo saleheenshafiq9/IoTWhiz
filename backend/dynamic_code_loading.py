@@ -14,7 +14,7 @@ def detect_dynamic_code_loading(folder_path):
                         lines = file.readlines()
                         for line_number, line in enumerate(lines, start=1):
                             # Updated regex pattern to match different forms of DexClassLoader instantiation
-                            dynamic_loading_pattern = r'DexClassLoader\s*\(\s*.*\s*,\s*.*\s*,\s*.*\s*\)'
+                            dynamic_loading_pattern = r'(ClassLoader|DexClassLoader)\s*\(\s*.*\s*,\s*.*\s*,\s*.*\s*\)'
                             matches = re.findall(dynamic_loading_pattern, line)
                             if matches:
                                 # Extracting only the file name from the full file path

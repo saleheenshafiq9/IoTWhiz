@@ -12,7 +12,10 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       content: (
         <ul>
           {genericAnalysis.detected_apis.map((api, index) => {
-            const [filePath, lineNumber, code] = api.split(':');
+            const parts = api.split(':');
+            const filePath = parts[0];
+            const lineNumber = parts[1];
+            const code = parts.slice(2).join(':'); // Concatenate remaining parts with ':'
             return (
               <li key={index}>
                 <span className="index">{index + 1}:</span>{' '}
@@ -31,7 +34,10 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       content: (
         <ul>
           {genericAnalysis.detected_dynamic_loading.map((dynamic, index) => {
-            const [filePath, lineNumber, code] = dynamic.split(':');
+            const parts = dynamic.split(':');
+            const filePath = parts[0];
+            const lineNumber = parts[1];
+            const code = parts.slice(2).join(':'); // Concatenate remaining parts with ':'
             return (
               <li key={index}>
                 <span className="index">{index + 1}:</span>{' '}
