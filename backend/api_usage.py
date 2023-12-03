@@ -28,8 +28,7 @@ def detect_api_usage(folder_path):
                                 matches = re.findall(pattern, content)
                                 if matches:
                                     api_calls.add(f"{relative_path}:{line_number}: {content}")
-                                    total_api_usages += len(matches)
             except Exception as e:
                 print(f"Error processing file: {file_name}. Skipping. Error: {e}")
-
+    total_api_usages = len(api_calls)
     return api_calls, total_api_usages

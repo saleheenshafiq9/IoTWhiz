@@ -7,16 +7,14 @@ def search_for_patterns(project_folder_name):
     project_folder = os.path.join(current_directory, project_folder_name)
 
     reflection_patterns = {
-        'Class Loading': r'\bClass\.forName\b',
-        'Method Retrieval': r'\b(getMethod|getDeclaredMethod)\b',
-        'Instance Creation': r'\bnewInstance\b',
-        'Method Invocation': r'\binvoke\b',
-        'Field Retrieval': r'\bgetDeclaredFields\b',
-        'Access Control': r'\bsetAccessible\(true\)\b',
-        'Annotations Retrieval': r'\bgetDeclaredAnnotations\b'
+        'Class_Loading': [],
+        'Method_Retrieval': [],
+        'Instance_Creation': [],
+        'Method_Invocation': [],
+        'Field_Retrieval': [],
+        'Access_Control': [],
+        'Annotations_Retrieval': []
     }
-
-    reflection_counts = {reflection_type: {'count': 0, 'occurrences': []} for reflection_type in reflection_patterns}
 
     total_reflection_count = 0
 
@@ -27,24 +25,53 @@ def search_for_patterns(project_folder_name):
 
                 try:
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                        file_content = f.read()
+                        lines = f.readlines()
                 except OSError as e:
                     print(f"Skipping file: {file_path} due to error: {e}")
                     continue
 
-                for reflection_type, pattern in reflection_patterns.items():
-                    matches = re.findall(pattern, file_content)
-                    count = len(matches)
-                    reflection_counts[reflection_type]['count'] += count
-                    total_reflection_count += count
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    file_content = f.read()
 
-                    if count > 0:
-                        reflection_counts[reflection_type]['occurrences'].append(file_path)
+                for reflection_type in reflection_patterns:
+                    pattern = get_pattern(reflection_type)
+                    matches = re.finditer(pattern, file_content)
+                    for match in matches:
+                        line_num = get_line_number(lines, match.start())
+                        reflection_patterns[reflection_type].append({
+                            'file_path': file_path.replace(project_folder, ''),
+                            'line_number': line_num,
+                            'line_content': lines[line_num - 1].strip()
+                        })
+                        total_reflection_count += 1
 
-    reflection_counts['Total Reflections'] = total_reflection_count
+    reflection_counts = {
+        reflection_type: {
+            'count': len(occurrences),
+            'occurrences': occurrences
+        } for reflection_type, occurrences in reflection_patterns.items()
+    }
+
+    reflection_counts['Total_Reflections'] = total_reflection_count
     return reflection_counts
 
-# if __name__ == "__main__":
-#     project_folder_name = 'backend/C94B84568949584210FFEA778B6E81F40888EC26CBAE4FC4289D809D9E24ADD1'
-#     reflections_summary = search_for_patterns(project_folder_name)
-#     print(reflections_summary)
+def get_pattern(reflection_type):
+    patterns = {
+        'Class_Loading': r'\bClass\.forName\b',
+        'Method_Retrieval': r'\b(getMethod|getDeclaredMethod)\b',
+        'Instance_Creation': r'\bnewInstance\b',
+        'Method_Invocation': r'\binvoke\b',
+        'Field_Retrieval': r'\bgetDeclaredFields\b',
+        'Access_Control': r'\bsetAccessible\(true\)\b',
+        'Annotations_Retrieval': r'\bgetDeclaredAnnotations\b'
+    }
+    return patterns.get(reflection_type, '')
+
+def get_line_number(lines, index):
+    line_num = 1
+    for line in lines:
+        if index <= len(line):
+            return line_num
+        index -= len(line)
+        line_num += 1
+    return -1

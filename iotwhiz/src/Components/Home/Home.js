@@ -3,6 +3,8 @@ import Modal from 'react-modal';
 import './Home.css'
 import Analysis from '../Analysis/Analysis';
 import CountAnalysis from '../Analysis/CountAnalysis';
+import ReflectionAnalysis from '../Analysis/ReflectionAnalysis';
+import DatabaseStorage from '../Analysis/DatabaseStorage';
 
 const Home = () => {
   const [showOptions, setShowOptions] = useState(false);
@@ -371,10 +373,16 @@ const Home = () => {
   {genericAnalysis && layoutAnalysis && lineAnalysis && databaseAnalysis && reflectionAnalysis && (
     <div>
       <div className='row'>
-        <div className='col-8'>
+        <div className='col-3'>
           <Analysis genericAnalysis={genericAnalysis} layoutAnalysis={layoutAnalysis} />
         </div>
-        <div className='col-4'>
+        <div className='col-3'>
+          <ReflectionAnalysis lineAnalysis={reflectionAnalysis} />
+        </div>
+        <div className='col-3'>
+          <DatabaseStorage dataAnalysis={databaseAnalysis} />
+        </div>
+        <div className='col-3'>
           <CountAnalysis lineAnalysis={lineAnalysis} />
         </div>
       </div>

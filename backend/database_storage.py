@@ -37,7 +37,7 @@ def search_database_related_strategies(project_folder):
 
     return strategies
 
-def describe_database_strategies(strategies):
+def describe_database_strategies(strategies, project_folder):
     descriptions = {
         'Cursor': "Several occurrences of Cursor objects being used for querying databases (query, getCursor, etc.)",
         'ContentResolver': "Calls to getContentResolver() for interacting with data from various sources",
@@ -56,8 +56,9 @@ def describe_database_strategies(strategies):
         if occurrences:
             strategy_occurrences = []
             for file_path, line_number, line_content in occurrences:
+                relative_file_path = os.path.relpath(file_path, project_folder)
                 strategy_occurrences.append({
-                    'File': file_path,
+                    'File': relative_file_path,
                     'Line': line_number,
                     'Content': line_content
                 })

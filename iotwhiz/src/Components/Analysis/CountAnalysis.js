@@ -2,34 +2,43 @@ import React from 'react';
 import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      marginTop: '20px',
+      root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: '20px',
+      },
+      card: {
+        width: '200px',
+        height: '130px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+        fontFamily: "'Kdam Thmor Pro', sans-serif",
+        marginTop: '20px',
+        textAlign: 'center', // Align text center
+        transition: 'background-color 0.3s ease',
+        '&:hover': {
+          backgroundColor: '#007bff',
+          '& $value': {
+            color: '#f5f5f5', // Change value color on hover
+          },
+          '& $title': {
+            color: '#f5f5f5', // Change value color on hover
+          },
     },
-    card: {
-      width: '200px',
-      height: '130px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f5f5f5',
-      borderRadius: '8px',
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-      fontFamily: "'Kdam Thmor Pro', sans-serif",
-      marginTop: '20px',
-      textAlign: 'center', // Align text center
-    },
+      },
     title: {
       fontSize: '16px',
       fontWeight: '500',
       marginTop: '20px',
       marginBottom: '10px',
       fontFamily: "'Kdam Thmor Pro', sans-serif",
-      backgroundColor: '#0056b3', // Dark background color
-      color: 'white', // White text color
+      color: '#0056b3', // White text color
       width: '100%', // Ensure title spans the entire width
       borderTopLeftRadius: '8px', // Rounded corners
       borderTopRightRadius: '8px', // Rounded corners
@@ -41,7 +50,7 @@ const useStyles = makeStyles({
       color: 'darkslategrey',
       fontFamily: "'Kdam Thmor Pro', sans-serif",
       paddingBottom: '40px',
-      paddingTop: '10px'
+      paddingTop: '10px',
     },
   });  
   

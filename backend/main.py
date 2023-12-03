@@ -117,7 +117,7 @@ async def upload_folder(folder_path: FolderPath):
 async def upload_folder(folder_path: FolderPath):
     received_folder_path = folder_path.folder_path
     strategies_found = search_database_related_strategies(received_folder_path)
-    strategies_description = describe_database_strategies(strategies_found)
+    strategies_description = describe_database_strategies(strategies_found, received_folder_path)
 
     return strategies_description
 

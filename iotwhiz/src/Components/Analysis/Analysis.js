@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Analysis.css';
 
-const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
-  if (!genericAnalysis || !layoutAnalysis) {
-    return <div>Loading...</div>;
-  }
+const Modal = ({ closeModal, children }) => (
+  <div className="modal-overlay">
+      <span className="close" onClick={closeModal}>
+        &times;
+      </span>
+    <div className="modal-analysis">
+      {children}
+    </div>
+  </div>
+);
 
-  const accordionItems = [
+const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
+  const [modalContent, setModalContent] = useState(null);
+
+  useEffect(() => {
+    if (!genericAnalysis || !layoutAnalysis) {
+      setModalContent(<div>Loading...</div>);
+    }
+  }, [genericAnalysis, layoutAnalysis]);
+
+  const openModal = (content) => {
+    setModalContent(content);
+  };
+
+  const closeModal = () => {
+    setModalContent(null);
+  };
+  
+  const cardItems = [
     {
-      title: `Detected APIs (${genericAnalysis.total_usages})`,
+      title: `Detected APIs`,
+      usage: genericAnalysis.total_usages,
       content: (
         <ul>
           {genericAnalysis.detected_apis.map((api, index) => {
@@ -30,7 +54,8 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       total: genericAnalysis.total_usages,
     },
     {
-      title: `Detected Dynamic Loading (${genericAnalysis.total_dynamic_usages})`,
+      title: `Detected Dynamic Loading`,
+      usage: genericAnalysis.total_dynamic_usages,
       content: (
         <ul>
           {genericAnalysis.detected_dynamic_loading.map((dynamic, index) => {
@@ -52,7 +77,8 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       total: genericAnalysis.total_dynamic_usages,
     },
     {
-      title: `Detected Permissions (${genericAnalysis.total_permissions})`,
+      title: `Detected Permissions`,
+      usage: genericAnalysis.total_permissions,
       content: (
         <ul>
           {genericAnalysis.detected_permissions.map((permission, index) => {
@@ -81,7 +107,9 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
       content: (
         <ul>
           {layoutAnalysis.Widgets_and_Views.map((widget, index) => (
-            <li key={index}>
+            <li key={index} style={{
+              color: "#333"
+            }}>
               <span className="filePath">Widget or View Path:</span> {widget[0]} <br />
               <span className="count">Count:</span> {widget[1]} <br />
               <span className="widgetType">Widget Type:</span> {widget[2]} <br />
@@ -98,7 +126,9 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
             if (Array.isArray(layoutType) && layoutType.length === 2) {
               const [layout, filePath] = layoutType;
               return (
-                <li key={index}>
+                <li key={index} style={{
+                  color: "#333"
+                }}>
                   <span className="layoutType">Layout Type:</span> {layout} <br />
                   <span className="filePath">File Path:</span> {filePath}
                 </li>
@@ -117,7 +147,9 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
             if (Array.isArray(nestedLayout) && nestedLayout.length === 2) {
               const [filePath, layoutContent] = nestedLayout;
               return (
-                <li key={index}>
+                <li key={index} style={{
+                  color: "#333"
+                }}>
                   <span className="filePath">File Path:</span> {filePath} <br />
                   <span className="layoutContent">Layout Content:</span> {layoutContent}
                 </li>
@@ -130,36 +162,18 @@ const Analysis = ({ genericAnalysis, layoutAnalysis }) => {
     }    
   ];
 
-  return (
+ return (
     <div className="analysis-container">
-      {accordionItems.map((item, index) => (
-        <div className="accordion" id={`accordion-${index + 1}`}>
-          <h2 className="accordion-header" id={`heading-${index + 1}`}>
-            <button
-              className="accordion-button"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target={`#collapse-${index + 1}`}
-              aria-controls={`collapse-${index + 1}`}
-            >
-              {item.title}
-            </button>
-          </h2>
-          <div
-            id={`collapse-${index + 1}`}
-            className="accordion-collapse collapse"
-            aria-labelledby={`heading-${index + 1}`}
-            data-bs-parent={`#accordion-${index + 1}`}
-          >
-            <div className="accordion-body">
-              {item.content}
-              {item.total && <p style={{
-                color: '#454355'
-              }}>Total: {item.total}</p>}
-            </div>
+      {cardItems.map((item, index) => (
+        <div className="card" key={index} onClick={() => openModal(item.content)}>
+          <div className="card-header">
+            {item.title}
           </div>
+          {item.usage && <div className='usage'>{item.usage}</div>}
         </div>
       ))}
+
+      {modalContent && <Modal closeModal={closeModal}>{modalContent}</Modal>}
     </div>
   );
 };
