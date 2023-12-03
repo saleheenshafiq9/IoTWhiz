@@ -18,6 +18,8 @@ const Home = () => {
   const [decompileAPK, setDecompileAPK] = useState(false);
   const [genericAnalysis, setGenericAnalysis] = useState(null)
   const [lineAnalysis, setLineAnalysis] = useState(null)
+  const [databaseAnalysis, setDatabaseAnalysis] = useState(null)
+  const [reflectionAnalysis, setReflectionAnalysis] = useState(null)
   const [layoutAnalysis, setLayoutAnalysis] = useState(null)
   const [uploadProject, setUploadProject] = useState(false)
 
@@ -60,6 +62,42 @@ const Home = () => {
                 console.error('Error:', error);
                 // Handle errors
             });
+
+            fetch('http://localhost:8000/reflection/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ folder_path: folderPath }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Handle the response from the backend
+                setReflectionAnalysis(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors
+            });
+
+            fetch('http://localhost:8000/database-storage/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ folder_path: folderPath }),
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  // Handle the response from the backend
+                  setDatabaseAnalysis(data);
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  // Handle errors
+              });
 
             fetch('http://localhost:8000/analyze-layout/', {
               method: 'POST',
@@ -330,7 +368,7 @@ const Home = () => {
   </div>
     }
 
-  {genericAnalysis && layoutAnalysis && lineAnalysis && (
+  {genericAnalysis && layoutAnalysis && lineAnalysis && databaseAnalysis && reflectionAnalysis && (
     <div>
       <div className='row'>
         <div className='col-8'>

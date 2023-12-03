@@ -34,7 +34,7 @@ def count_lines_of_code(folder_path):
     return total_lines, skipped_files
 
 # Provide the specific path to your Android project folder containing Java source files
-project_folder = 'goodtime'
-total_lines, skipped_files = count_lines_of_code(project_folder)
-print(f"Total lines of code: {total_lines}")
-print(f"Skipped files: {skipped_files}")
+# project_folder = 'goodtime'
+# total_lines, skipped_files = count_lines_of_code(project_folder)
+# print(f"Total lines of code: {total_lines}")
+# print(f"Skipped files: {skipped_files}")

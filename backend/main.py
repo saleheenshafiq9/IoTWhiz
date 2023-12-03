@@ -9,6 +9,8 @@ from jadx import decompile_apk
 from APK_download import download_apk
 from count_lines import count_lines_of_code
 from count_classes import count_classes_methods
+from database_storage import search_database_related_strategies, describe_database_strategies
+from reflection import search_for_patterns
 
 app = FastAPI()
 
@@ -110,3 +112,19 @@ async def upload_folder(folder_path: FolderPath):
             'number_of_classes': classes,
             'number_of_methods': methods,
         }
+
+@app.post("/database-storage/")
+async def upload_folder(folder_path: FolderPath):
+    received_folder_path = folder_path.folder_path
+    strategies_found = search_database_related_strategies(received_folder_path)
+    strategies_description = describe_database_strategies(strategies_found)
+
+    return strategies_description
+
+@app.post("/reflection/")
+async def upload_folder(folder_path: FolderPath):
+    received_folder_path = folder_path.folder_path
+
+    reflections_summary = search_for_patterns(received_folder_path)
+    
+    return reflections_summary
