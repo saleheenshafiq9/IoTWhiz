@@ -189,6 +189,8 @@ const Home = () => {
               setDownloadSuccess(false);
               setTimeout(() => {
                 setDecompilationSuccessful(true);
+                const alertSound = new Audio('./mild_alert.mp3'); // Replace with the path to your sound file
+                alertSound.play();
                 setTimeout(() => {
                   setDecompilationSuccessful(false); // Reset to false after 3 seconds
                 }, 3000); 
