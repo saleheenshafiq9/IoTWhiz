@@ -24,6 +24,7 @@ const Home = () => {
   const [reflectionAnalysis, setReflectionAnalysis] = useState(null)
   const [layoutAnalysis, setLayoutAnalysis] = useState(null)
   const [uploadProject, setUploadProject] = useState(false)
+  const [iot, setIot] = useState(false)
 
     const handleFolderUpload = (event) => {
         setUploadProject(true);
@@ -34,7 +35,7 @@ const Home = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ folder_path: folderPath }),
+            body: JSON.stringify({ folder_path: folderPath, iot_enabled: iot }),
             })
             .then(response => response.json())
             .then(data => {
@@ -52,7 +53,7 @@ const Home = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ folder_path: folderPath }),
+            body: JSON.stringify({ folder_path: folderPath, iot_enabled: iot }),
             })
             .then(response => response.json())
             .then(data => {
@@ -70,7 +71,7 @@ const Home = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ folder_path: folderPath }),
+            body: JSON.stringify({ folder_path: folderPath, iot_enabled: iot }),
             })
             .then(response => response.json())
             .then(data => {
@@ -88,7 +89,7 @@ const Home = () => {
               headers: {
                   'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ folder_path: folderPath }),
+              body: JSON.stringify({ folder_path: folderPath, iot_enabled: iot }),
               })
               .then(response => response.json())
               .then(data => {
@@ -106,7 +107,7 @@ const Home = () => {
               headers: {
                   'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ folder_path: folderPath }),
+              body: JSON.stringify({ folder_path: folderPath, iot_enabled: iot }),
               })
               .then(response => response.json())
               .then(data => {
@@ -250,6 +251,10 @@ const Home = () => {
         }
       };
 
+      const handleCheckboxChange = (event) => {
+        setIot(event.target.checked);
+      };    
+
       useEffect(() => {
         if (showOptions) {
           document.addEventListener('click', handleClickOutside);
@@ -298,6 +303,11 @@ const Home = () => {
         onChange={handleFolderUpload}
         style={{ display: 'none' }}
       />
+      <label style={{
+        marginLeft: "20px",
+      }}>
+        <input type="checkbox" onChange={handleCheckboxChange} /> Tick this box if you're uploading an IoT App?
+      </label>
     </div>
         {uploadAPK && <p style={{
           marginTop: "40px"
@@ -384,6 +394,14 @@ const Home = () => {
         </div>
         <div className='col-3'>
           <CountAnalysis lineAnalysis={lineAnalysis} />
+        </div>
+      </div>
+      <div className='row'>
+        <div className='col d-flex justify-content-center'>
+          <span style={{
+            color: '#007bff',
+            marginRight: '5px'
+          }}>Folder Path: </span> {lineAnalysis.folder_path}
         </div>
       </div>
     </div>

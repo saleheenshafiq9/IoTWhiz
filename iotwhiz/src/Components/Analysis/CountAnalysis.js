@@ -9,8 +9,8 @@ const useStyles = makeStyles({
         marginTop: '20px',
       },
       card: {
-        width: '200px',
-        height: '130px',
+        width: '180px',
+        height: '117px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -24,16 +24,13 @@ const useStyles = makeStyles({
         transition: 'background-color 0.3s ease',
         '&:hover': {
           backgroundColor: '#007bff',
-          '& $value': {
-            color: '#f5f5f5', // Change value color on hover
-          },
           '& $title': {
             color: '#f5f5f5', // Change value color on hover
           },
     },
       },
     title: {
-      fontSize: '16px',
+      fontSize: '14px',
       fontWeight: '500',
       marginTop: '20px',
       marginBottom: '10px',
@@ -45,21 +42,34 @@ const useStyles = makeStyles({
       padding: '10px', // Add padding for better appearance
     },
     value: {
-      fontSize: '30px',
+      fontSize: '24px',
       fontWeight: 'bold',
       color: 'darkslategrey',
       fontFamily: "'Kdam Thmor Pro', sans-serif",
       paddingBottom: '40px',
-      paddingTop: '10px',
+    },
+    valueAlt: {
+      fontSize: '20px',
+      fontWeight: 'bold',
+      color: 'darkslategrey',
+      fontFamily: "'Kdam Thmor Pro', sans-serif",
+      paddingBottom: '40px',
     },
   });  
   
 
 const CountAnalysis = ({ lineAnalysis }) => {
   const classes = useStyles();
-
+  const isIoTApp = lineAnalysis.iot_enabled;
+  
   return (
     <div className={classes.root}>
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography className={classes.title}>Type</Typography>
+          <Typography className={classes.valueAlt}>{isIoTApp ? 'IoT App' : 'Non-IoT App'}</Typography>
+        </CardContent>
+      </Card>
       <Card className={classes.card}>
         <CardContent>
           <Typography className={classes.title}>Lines of Code</Typography>

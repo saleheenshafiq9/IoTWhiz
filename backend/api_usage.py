@@ -21,7 +21,6 @@ def detect_api_usage(folder_path):
                             api_patterns = [
                                 r'(HttpURLConnection|OkHttp|HttpClient|RestTemplate)\\.',
                                 r'new\s+URL\(',
-                                r'JSONObject|JSONArray',
                                 # Add more patterns for different API usage
                             ]
                             for pattern in api_patterns:

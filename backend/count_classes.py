@@ -28,7 +28,7 @@ def count_classes_methods(project_folder):
     return class_count, method_count
 
 # Provide the relative path to your Android project folder
-project_relative_path = 'Pizza-Shop-Refactored'
-classes, methods = count_classes_methods(project_relative_path)
-print(f"Number of classes: {classes}")
-print(f"Number of methods: {methods}")
+# project_relative_path = 'Pizza-Shop-Refactored'
+# classes, methods = count_classes_methods(project_relative_path)
+# print(f"Number of classes: {classes}")
+# print(f"Number of methods: {methods}")
