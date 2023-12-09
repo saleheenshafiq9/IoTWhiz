@@ -11,6 +11,7 @@ def download_apk(api_key, sha256):
     if response.status_code == 200:
         # Extract filename or identifier to use for saving the file
         content_disposition = response.headers.get('content-disposition')
+        file_size = response.headers.get('content-length')
         if content_disposition:
             filename = content_disposition.split("filename=")[1]
             filename = filename.strip('"')  # Clean up the filename if needed
@@ -21,6 +22,6 @@ def download_apk(api_key, sha256):
         with open(filename, "wb") as file:
             file.write(response.content)
         print(f"File '{filename}' downloaded successfully!")
-        return filename
+        return filename, file_size
     else:
         print(f"Failed to download file. Status code: {response.status_code}")

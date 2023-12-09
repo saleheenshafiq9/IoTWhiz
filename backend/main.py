@@ -54,6 +54,7 @@ def store_data_in_mongodb(collection_name, folder_path, data):
 @app.post("/upload-folder/")
 async def upload_folder(folder_path: FolderPath):
     received_folder_path = folder_path.folder_path
+    received_iot_enabled = folder_path.iot_enabled
 
     # Use the received folder path in the detect_api_usage function
     detected_apis, total_usages = detect_api_usage(received_folder_path)
@@ -68,6 +69,8 @@ async def upload_folder(folder_path: FolderPath):
         "detected_permissions": list(detected_permissions),
         "total_permissions": total_permissions,
         "folder_path": received_folder_path,
+        'iot_enabled': received_iot_enabled,
+
     }
 
     store_data_in_mongodb("upload_folder_data", received_folder_path, data_to_store)
@@ -84,6 +87,7 @@ async def upload_folder(folder_path: FolderPath):
 @app.post("/analyze-layout/")
 async def analyze_layout(folder_path: FolderPath):
     received_folder_path = folder_path.folder_path
+    received_iot_enabled = folder_path.iot_enabled
 
     layout_files = explore_layout_files(received_folder_path)
     detected_components = analyze_layout_files(layout_files, received_folder_path)
@@ -95,6 +99,8 @@ async def analyze_layout(folder_path: FolderPath):
     data_to_store = {
         "detected_components": detected_components_list,
         "folder_path": received_folder_path,
+        'iot_enabled': received_iot_enabled,
+
     }
     store_data_in_mongodb("analyze_layout_data", received_folder_path, data_to_store)
 
@@ -114,13 +120,20 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
 
     print("Invoked /receive-api-key-sha256/")
 
-    filename = download_apk(received_api_key, received_sha256)
+    filename, file_size = download_apk(received_api_key, received_sha256)
+
+    data_to_store = {
+        "file_name": filename,
+        "file_size": file_size,
+    }
+    store_data_in_mongodb("downloads", filename, data_to_store)
     
     return {
         "message": "API Key and SHA256 received successfully",
         "received_api_key": received_api_key,
         "received_sha256": received_sha256,
-        "download_file": filename
+        "download_file": filename,
+        "file_size": file_size
     }
 
 @app.post("/receive-api-key-sha256-get-source-code/")
@@ -130,8 +143,14 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
 
     print("Invoked /receive-api-key-sha256-get-source-code/")
 
-    filename = download_apk(received_api_key, received_sha256)
+    filename, file_size = download_apk(received_api_key, received_sha256)
     output_dir = decompile_apk(filename)
+
+    data_to_store = {
+        "file_name": filename,
+        "file_size": file_size,
+    }
+    store_data_in_mongodb("downloads", filename, data_to_store)
 
     response_data = {
         "message": "API Key and SHA256 received successfully",
@@ -139,6 +158,7 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
         "received_sha256": received_sha256,
         "download_file": filename,
         "output_directory": output_dir,
+        "file_size": file_size
     }
     
     return response_data
@@ -172,6 +192,7 @@ async def upload_folder(folder_path: FolderPath):
 @app.post("/database-storage/")
 async def upload_folder(folder_path: FolderPath):
     received_folder_path = folder_path.folder_path
+    received_iot_enabled = folder_path.iot_enabled
     strategies_found = search_database_related_strategies(received_folder_path)
     strategies_description = describe_database_strategies(strategies_found, received_folder_path)
 
@@ -180,6 +201,7 @@ async def upload_folder(folder_path: FolderPath):
         "strategies_found": strategies_found,
         "strategies_description": strategies_description,
         "folder_path": received_folder_path,
+        'iot_enabled': received_iot_enabled,
     }
     store_data_in_mongodb("database_storage_data", received_folder_path, data_to_store)
 
@@ -188,6 +210,7 @@ async def upload_folder(folder_path: FolderPath):
 @app.post("/reflection/")
 async def upload_folder(folder_path: FolderPath):
     received_folder_path = folder_path.folder_path
+    received_iot_enabled = folder_path.iot_enabled
 
     reflections_summary = search_for_patterns(received_folder_path)
     
@@ -195,6 +218,8 @@ async def upload_folder(folder_path: FolderPath):
     data_to_store = {
         "reflections_summary": reflections_summary,
         "folder_path": received_folder_path,
+        'iot_enabled': received_iot_enabled,
+
     }
     store_data_in_mongodb("reflection_data", received_folder_path, data_to_store)
 
