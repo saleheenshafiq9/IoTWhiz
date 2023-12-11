@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, FileResponse
 from pymongo import MongoClient
 from pydantic import BaseModel
 from api_usage import detect_api_usage
@@ -12,6 +13,11 @@ from count_lines import count_lines_of_code
 from count_classes import count_classes_methods
 from database_storage import search_database_related_strategies, describe_database_strategies
 from reflection import search_for_patterns
+from api_analysis import calculate_stats
+from dc_analysis import calculate_dynamic_stats
+from pp_analysis import calculate_permissions, calculate_cooccurrences, CooccurrenceError, get_permission_counts
+import os
+from typing import Dict
 
 app = FastAPI()
 
@@ -224,3 +230,64 @@ async def upload_folder(folder_path: FolderPath):
     store_data_in_mongodb("reflection_data", received_folder_path, data_to_store)
 
     return reflections_summary
+
+@app.get("/stats")
+async def get_statistics():
+    try:
+        stats_data = calculate_stats()
+        return JSONResponse(content=stats_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+@app.get("/histogram")
+async def get_histogram_image():
+    # Define the relative path to the public directory from the backend directory
+    relative_path = os.path.join('..', 'iotwhiz', 'public', 'histogram.png')
+
+    # Return the image file using FileResponse
+    return FileResponse(relative_path)
+
+@app.get("/dynamic_stats")
+async def get_dynamic_stats():
+    try:
+        stats_data = calculate_dynamic_stats()
+        print(stats_data)
+        return JSONResponse(content=stats_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+# Define route to get histogram image
+@app.get("/dynamic_histogram")
+async def get_dynamic_histogram():
+    path = os.path.join('..', 'iotwhiz', 'public', 'dynamic_histogram.png')
+    return FileResponse(path)
+
+@app.get("/permission_stats")
+async def get_permisson_stats():
+    try:
+        stats_data = calculate_permissions()
+        return JSONResponse(content=stats_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+@app.get('/permission_cooccurrences', response_model=Dict[str, Dict[str, int]])
+async def get_cooccurrences():
+    try:
+        cooccurrences = calculate_cooccurrences()
+        return cooccurrences
+    except CooccurrenceError as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.get("/permission-counts")
+async def get_permission_counts_api():
+    try:
+        results = get_permission_counts()
+        print(results)  # Output the results to console for debugging purposes
+        return results  # Return the permission counts
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating permission counts: {e}")
+    
+@app.get("/permission_frequency")
+async def get_permission_frequenct():
+    path = os.path.join('..', 'iotwhiz', 'public', 'frequency_dist.png')
+    return FileResponse(path)

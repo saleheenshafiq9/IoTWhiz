@@ -2,23 +2,37 @@ from pymongo import MongoClient
 import pandas as pd
 from scipy import stats
 import matplotlib.pyplot as plt
+import os
 
 # Establish a connection to the MongoDB instance
 client = MongoClient('mongodb://localhost:27017/')
 db = client['iotWhiz']
 collection = db['upload_folder_data']
 
-# Query the database to filter IoT and non-IoT data
-iot_data = collection.find({'iot_enabled': True}, {'total_usages': 1, '_id': 0})
-non_iot_data = collection.find({'iot_enabled': False}, {'total_usages': 1, '_id': 0})
+def calculate_stats():
+    iot_data = collection.find({'iot_enabled': True}, {'total_usages': 1, '_id': 0})
+    non_iot_data = collection.find({'iot_enabled': False}, {'total_usages': 1, '_id': 0})
 
-# Extracting total usages for IoT and non-IoT into lists
-iot_api_usages = [data['total_usages'] for data in iot_data]
-non_iot_api_usages = [data['total_usages'] for data in non_iot_data]
+    iot_api_usages = [data['total_usages'] for data in iot_data]
+    non_iot_api_usages = [data['total_usages'] for data in non_iot_data]
 
-# Create DataFrames
-iot_df = pd.DataFrame({"api_usages": iot_api_usages})
-non_iot_df = pd.DataFrame({"api_usages": non_iot_api_usages})
+    iot_df = pd.DataFrame({"api_usages": iot_api_usages})
+    non_iot_df = pd.DataFrame({"api_usages": non_iot_api_usages})
+
+    t_statistic, p_value = stats.ttest_ind(iot_df["api_usages"], non_iot_df["api_usages"])
+
+    alpha = 0.05
+    if p_value < alpha:
+        verdict = "There is a significant difference between IoT and Non-IoT API usages."
+    else:
+        verdict = "There is no significant difference between IoT and Non-IoT API usages."
+
+    return {
+        "IoT_Stats": get_stats_output(iot_df, "IoT Apps"),
+        "Non_IoT_Stats": get_stats_output(non_iot_df, "Non-IoT Apps"),
+        "Verdict": verdict,
+        "Histogram": generate_histogram(iot_df, non_iot_df)
+    }
 
 # Functions to generate output as requested
 def get_stats_output(df, category):
@@ -40,25 +54,18 @@ def get_stats_output(df, category):
     output += f"Maximum: The maximum observed API usage for {category.lower()} is {maximum}.\n\n"
     return output
 
-# Output the statistical information
-print(get_stats_output(iot_df, "IoT Apps"))
-print(get_stats_output(non_iot_df, "Non-IoT Apps"))
-
-# Perform t-test
-t_statistic, p_value = stats.ttest_ind(iot_df["api_usages"], non_iot_df["api_usages"])
-
-# Verdict based on p-value
-alpha = 0.05  # significance level
-if p_value < alpha:
-    print("Verdict: There is a significant difference between IoT and Non-IoT API usages.")
-else:
-    print("Verdict: There is no significant difference between IoT and Non-IoT API usages.")
-
+def generate_histogram(iot_df, non_iot_df):
 # Plotting histogram
-plt.hist(iot_df["api_usages"], bins=20, label="IoT Apps", alpha=0.5)
-plt.hist(non_iot_df["api_usages"], bins=20, label="Non-IoT Apps", alpha=0.5)
-plt.legend()
-plt.xlabel("Number of API Usages")
-plt.ylabel("Frequency")
-plt.title("Distribution of API Usages in IoT and Non-IoT Apps")
-plt.show()
+    plt.hist(iot_df["api_usages"], bins=20, label="IoT Apps", alpha=0.5)
+    plt.hist(non_iot_df["api_usages"], bins=20, label="Non-IoT Apps", alpha=0.5)
+    plt.legend()
+    plt.xlabel("Number of API Usages")
+    plt.ylabel("Frequency")
+    plt.title("Distribution of API Usages in IoT and Non-IoT Apps")
+
+    # Define the relative path to the public directory from the backend directory
+    relative_path = os.path.join('..', 'iotwhiz', 'public', 'histogram.png')
+
+    # Save the histogram image to a file using the relative path
+    plt.savefig(relative_path)
+    plt.close()  # Close the plot to free memory
