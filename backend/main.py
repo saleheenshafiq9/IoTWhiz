@@ -256,12 +256,6 @@ async def get_dynamic_stats():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-# Define route to get histogram image
-@app.get("/dynamic_histogram")
-async def get_dynamic_histogram():
-    path = os.path.join('..', 'iotwhiz', 'public', 'dynamic_histogram.png')
-    return FileResponse(path)
-
 @app.get("/permission_stats")
 async def get_permisson_stats():
     try:
@@ -286,8 +280,3 @@ async def get_permission_counts_api():
         return results  # Return the permission counts
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error calculating permission counts: {e}")
-    
-@app.get("/permission_frequency")
-async def get_permission_frequenct():
-    path = os.path.join('..', 'iotwhiz', 'public', 'frequency_dist.png')
-    return FileResponse(path)
