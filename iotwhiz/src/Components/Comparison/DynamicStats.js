@@ -10,7 +10,12 @@ const DynamicStats = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/dynamic_stats'); // Replace with your FastAPI server address
+      const response = await fetch('http://localhost:8000/dynamic_stats' , {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }); // Replace with your FastAPI server address
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

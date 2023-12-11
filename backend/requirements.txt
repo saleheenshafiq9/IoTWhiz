@@ -1,0 +1,7 @@
+uvicorn
+fastapi
+seaborn
+pymongo
+requests
+tqdm
+scipy
