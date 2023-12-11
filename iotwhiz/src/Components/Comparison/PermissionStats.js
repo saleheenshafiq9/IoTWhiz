@@ -137,7 +137,7 @@ const PermissionStats = () => {
       </div>
     </div>
     <div className='statistics-container'>
-      {/* <PermissionCounts /> */}
+      <PermissionCounts />
     </div>
     </>
   );

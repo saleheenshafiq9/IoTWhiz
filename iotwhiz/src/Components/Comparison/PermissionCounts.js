@@ -24,15 +24,17 @@ const PermissionCounts = () => {
     if (!permissionCounts) {
       return <p>Loading...</p>;
     }
-    const { t_statistic, p_value, verdict, distribution_path } = permissionCounts;
+    const { t_statistic, p_value, verdict } = permissionCounts;
 
     return (
-      <div className="permission-container">
+      <div className="permission-container" style={{
+        color: '#333'
+      }}>
         <h3>Permission Analysis</h3>
         <p>T-statistic: {t_statistic}</p>
         <p>P-value: {p_value}</p>
         <p>Verdict: {verdict}</p>
-        <img src={distribution_path} alt="Permission Frequency Distribution" />
+        <img src="frequency_dist.png" alt="Histogram" width="800px"/>
       </div>
     );
     }

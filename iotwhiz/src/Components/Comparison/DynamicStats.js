@@ -3,14 +3,9 @@ import './Comparison.css'; // Import the CSS file for the component
 
 const DynamicStats = () => {
   const [statistics, setStatistics] = useState(null);
-  const [histogramImage, setHistogramImage] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchHistogramImage();
   }, []);
 
   const fetchData = async () => {
@@ -25,20 +20,6 @@ const DynamicStats = () => {
       console.error('Error fetching data:', error);
     }
   };
-
-  const fetchHistogramImage = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/dynamic_histogram');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const blob = await response.blob();
-      setHistogramImage(URL.createObjectURL(blob));
-    } catch (error) {
-      console.error('Error fetching histogram image:', error);
-    }
-  };
-  
 
   const renderStats = () => {
     if (!statistics) {
@@ -69,9 +50,7 @@ const DynamicStats = () => {
         </div>
 
         </div>
-        {histogramImage && (
-      <img src={histogramImage} alt="Histogram" />
-        )}      
+      <img src="dynamic_histogram.png" alt="Histogram" />
     </div>
     );
   };
