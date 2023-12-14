@@ -8,7 +8,7 @@ import os
 def calculate_dynamic_stats():
     # Connect to MongoDB and fetch data
     client = MongoClient('mongodb://localhost:27017/')
-    db = client['iotWhiz']
+    db = client['iotWhiz_new']
     collection = db['upload_folder_data']
 
     iot_data = collection.find({'iot_enabled': True})
@@ -60,15 +60,15 @@ def calculate_dynamic_stats():
     plt.xlabel("App type")
     plt.ylabel("Dynamic class loading usage")
     plt.title("Comparison of dynamic class loading usage between IoT and non-IoT apps")
-    histogram_path = os.path.join('..', 'iotwhiz', 'public', 'dynamic_histogram.png')
-    plt.savefig(histogram_path)
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    relative_path = os.path.join(current_directory, 'dc_histogram.png')    
+    plt.savefig(relative_path)
     plt.close()
-
     return {
         "IoT_Stats": get_stats_output(iot_count, iot_mean, iot_std, iot_min, iot_q1, iot_median, iot_q3, iot_max, "IoT Apps"),
         "Non_IoT_Stats": get_stats_output(non_iot_count, non_iot_mean, non_iot_std, non_iot_min, non_iot_q1, non_iot_median, non_iot_q3, non_iot_max, "Non-IoT Apps"),
         "Verdict": verdict,
-        "Histogram": histogram_path,
+        "Histogram": relative_path,
     }
 
 # Function to format statistics output

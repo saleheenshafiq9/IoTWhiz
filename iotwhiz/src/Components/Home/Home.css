@@ -22,7 +22,30 @@
     border-radius: 5px;
     border: 1px solid #007bff;
   }
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   
+  /* Add this to your CSS file */
+.spinner {
+  border: 4px solid #007bff;
+  border-left: 4px solid #FFF;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
   .custom-file-upload:hover {
     background-color: #0056b3;
   }
@@ -138,6 +161,19 @@
 
 .custom-file-upload:hover {
   background-color: #0056b3;
+}
+
+.custom-file-upload2 {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #ff9c07;
+  color: #fff;
+  border-radius: 5px;
+  border: 1px solid #ffae00;
+}
+
+.custom-file-upload2:hover {
+  background-color: #ffd30d;
 }
 
 .close-btn {

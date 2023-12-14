@@ -52,7 +52,7 @@ permission_categories = {
 
 # Connect to your MongoDB instance
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-database = client["iotWhiz"]
+database = client["iotWhiz_new"]
 collection = database["upload_folder_data"]
 
 # Query the collection for relevant data
@@ -113,7 +113,6 @@ def calculate_permissions():
 
   return {
      "permission_stats": get_permission_stats(df),
-    #  "permission_counts": get_permission_counts(df)
   }
 
 def calculate_cooccurrences():
@@ -170,8 +169,9 @@ def get_permission_counts() -> Dict[str, float]:
   plt.title("Frequency Distribution of Permissions for IoT and Non-IoT Apps")
   plt.legend()
   plt.tight_layout()
-  distribution_path = os.path.join('..', 'iotwhiz', 'public', 'frequency_dist.png')
-  plt.savefig(distribution_path)
+  current_directory = os.path.dirname(os.path.abspath(__file__))
+  relative_path = os.path.join(current_directory, 'frequency_dist.png')  
+  plt.savefig(relative_path)
   plt.close()
 
   # Create separate DataFrames for IoT and non-IoT apps
@@ -191,7 +191,7 @@ def get_permission_counts() -> Dict[str, float]:
         "t_statistic": t_statistic,
         "p_value": p_value,
         "verdict": verdict,
-        "distribution_path": distribution_path
+        "distribution_path": relative_path
     }
 
 def find_permission_cooccurrences(app_data):

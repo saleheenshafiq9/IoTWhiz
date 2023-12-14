@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from pymongo import MongoClient
@@ -18,11 +18,12 @@ from dc_analysis import calculate_dynamic_stats
 from pp_analysis import calculate_permissions, calculate_cooccurrences, CooccurrenceError, get_permission_counts
 import os
 from typing import Dict
+from pdfGenerate import generate_pdf_from_stats
 
 app = FastAPI()
 
 client = MongoClient('mongodb://localhost:27017/')  # Replace with your MongoDB connection string
-db = client['iotWhiz']  # Replace with your database name
+db = client['iotWhiz_new']  # Replace with your database name
 
 # CORS settings to allow requests from your React app
 app.add_middleware(
@@ -44,6 +45,7 @@ class APKFile(BaseModel):
 class APIKeySHA256(BaseModel):
     api_key: str
     sha256: str
+    iot_enabled: bool
 
 def store_data_in_mongodb(collection_name, folder_path, data):
     collection = db[collection_name]
@@ -123,14 +125,16 @@ async def upload_apk(apk_file: APKFile):
 async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     received_api_key = api_key_sha256.api_key
     received_sha256 = api_key_sha256.sha256
+    received_iot_enabled = api_key_sha256.iot_enabled
 
     print("Invoked /receive-api-key-sha256/")
 
     filename, file_size = download_apk(received_api_key, received_sha256)
 
     data_to_store = {
-        "file_name": filename,
-        "file_size": file_size,
+        "folder_path": filename,
+        "apk_size": file_size,
+        "iot_enabled": received_iot_enabled
     }
     store_data_in_mongodb("downloads", filename, data_to_store)
     
@@ -146,6 +150,7 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
 async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     received_api_key = api_key_sha256.api_key
     received_sha256 = api_key_sha256.sha256
+    received_iot_enabled = api_key_sha256.iot_enabled
 
     print("Invoked /receive-api-key-sha256-get-source-code/")
 
@@ -153,8 +158,9 @@ async def receive_api_key_sha256(api_key_sha256: APIKeySHA256):
     output_dir = decompile_apk(filename)
 
     data_to_store = {
-        "file_name": filename,
-        "file_size": file_size,
+        "folder_path": filename,
+        "apk_size": file_size,
+        "iot_enabled": received_iot_enabled
     }
     store_data_in_mongodb("downloads", filename, data_to_store)
 
@@ -235,17 +241,10 @@ async def upload_folder(folder_path: FolderPath):
 async def get_statistics():
     try:
         stats_data = calculate_stats()
+        print(stats_data)
         return JSONResponse(content=stats_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-
-@app.get("/histogram")
-async def get_histogram_image():
-    # Define the relative path to the public directory from the backend directory
-    relative_path = os.path.join('..', 'iotwhiz', 'public', 'histogram.png')
-
-    # Return the image file using FileResponse
-    return FileResponse(relative_path)
 
 @app.get("/dynamic_stats")
 async def get_dynamic_stats():
@@ -280,3 +279,8 @@ async def get_permission_counts_api():
         return results  # Return the permission counts
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error calculating permission counts: {e}")
+    
+@app.get("/generate-pdf")
+async def generate_pdf():
+    pdf_content = generate_pdf_from_stats()
+    return pdf_content

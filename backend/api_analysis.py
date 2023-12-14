@@ -6,7 +6,7 @@ import os
 
 # Establish a connection to the MongoDB instance
 client = MongoClient('mongodb://localhost:27017/')
-db = client['iotWhiz']
+db = client['iotWhiz_new']
 collection = db['upload_folder_data']
 
 def calculate_stats():
@@ -26,7 +26,6 @@ def calculate_stats():
         verdict = "There is a significant difference between IoT and Non-IoT API usages."
     else:
         verdict = "There is no significant difference between IoT and Non-IoT API usages."
-
     return {
         "IoT_Stats": get_stats_output(iot_df, "IoT Apps"),
         "Non_IoT_Stats": get_stats_output(non_iot_df, "Non-IoT Apps"),
@@ -55,17 +54,19 @@ def get_stats_output(df, category):
     return output
 
 def generate_histogram(iot_df, non_iot_df):
-# Plotting histogram
+    # Plotting histogram
     plt.hist(iot_df["api_usages"], bins=20, label="IoT Apps", alpha=0.5)
     plt.hist(non_iot_df["api_usages"], bins=20, label="Non-IoT Apps", alpha=0.5)
     plt.legend()
     plt.xlabel("Number of API Usages")
     plt.ylabel("Frequency")
     plt.title("Distribution of API Usages in IoT and Non-IoT Apps")
-
-    # Define the relative path to the public directory from the backend directory
-    relative_path = os.path.join('..', 'iotwhiz', 'public', 'histogram.png')
+    
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    relative_path = os.path.join(current_directory, 'histogram.png')
 
     # Save the histogram image to a file using the relative path
     plt.savefig(relative_path)
     plt.close()  # Close the plot to free memory
+
+    return relative_path

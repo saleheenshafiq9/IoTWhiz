@@ -6,6 +6,7 @@ import CountAnalysis from '../Analysis/CountAnalysis';
 import ReflectionAnalysis from '../Analysis/ReflectionAnalysis';
 import DatabaseStorage from '../Analysis/DatabaseStorage';
 
+
 const Home = () => {
   const [showOptions, setShowOptions] = useState(false);
   const dropdownRef = useRef(null);
@@ -141,7 +142,7 @@ const Home = () => {
 
       const handleDownloadAPK = () => {
         // Logic for downloading APK using apiKey and sha256 values
-        const data = { api_key: apiKey, sha256: sha256 };
+        const data = { api_key: apiKey, sha256: sha256, iot_enabled: iot };
         // console.log(data)
         setDownloading(true); // Start download, set state to true
         fetch('http://localhost:8000/receive-api-key-sha256/', {
@@ -171,7 +172,7 @@ const Home = () => {
       const handleGetSourceCode = () => {
         // Logic for getting source code using apiKey and sha256 values
         setDownloading(true); // Start download, set state to true
-        const data = { api_key: apiKey, sha256: sha256 };
+        const data = { api_key: apiKey, sha256: sha256, iot_enabled: iot };
         fetch('http://localhost:8000/receive-api-key-sha256-get-source-code/', {
           method: 'POST',
           headers: {
@@ -364,6 +365,11 @@ const Home = () => {
         <div className="modal-buttons" style={{
           marginBottom: '20px'
         }}>
+          <label style={{
+            marginLeft: "20px",
+          }}>
+            <input type="checkbox" onChange={handleCheckboxChange} /> Tick this box if you're uploading an IoT App?
+          </label>
           <button onClick={() => handleModalSubmit('download')} className="custom-file-upload">
             Download APK
           </button>

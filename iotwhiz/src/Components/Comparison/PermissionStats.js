@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import "./Comparison.css";
 
 const PermissionStats = () => {
-  const [statistics, setStatistics] = useState(null);
   const [cooccurrences, setCooccurrences] = useState(null);
 
   useEffect(() => {
@@ -58,6 +57,8 @@ const PermissionStats = () => {
       chartId === "iotChart"
         ? "rgba(75,192,192,1)" // Use the same color for IoT
         : "rgba(255,99,132,1)"; // Different color for non-IoT
+    
+    const adjustedCounts = counts.map(count => count - 40);
 
     const chartData = {
       labels: permissions,
@@ -69,7 +70,7 @@ const PermissionStats = () => {
           borderWidth: 1,
           hoverBackgroundColor: backgroundColors.replace(",1)", ",0.4)"),
           hoverBorderColor: "rgba(0,0,0,1)",
-          data: counts,
+          data: adjustedCounts,
         },
       ],
     };
@@ -99,7 +100,7 @@ const PermissionStats = () => {
             x: {
               labels: permissions, // Set the same labels for both charts
               min: 0, // Set the minimum value for the x-axis
-              max: 140, // Set the maximum value for the x-axis
+              max: 160, // Set the maximum value for the x-axis
             },
           },
         },
@@ -107,42 +108,8 @@ const PermissionStats = () => {
     }
   };
 
-  useEffect(() => {
-    fetch("http://localhost:8000/permission_stats")
-      .then((response) => response.json())
-      .then((data) => setStatistics(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
-  if (!statistics) return <p>Loading...</p>;
-
-  // Extract data from statistics object
-  const { permission_stats } = statistics;
-  const { count, max, min, mean, std } = permission_stats;
-
   return (
     <>
-      <div className="statistics-container" style={{ color: "#333" }}>
-        <h1>Permission Stats</h1>
-
-        <p>
-          Count: {count.iot} (IoT) / {count["non-iot"]} (Non-IoT)
-        </p>
-        <p>
-          Max: {max.iot} (IoT) / {max["non-iot"]} (Non-IoT)
-        </p>
-        <p>
-          Mean: {mean.iot.toFixed(3)} (IoT) / {mean["non-iot"].toFixed(3)}{" "}
-          (Non-IoT)
-        </p>
-        <p>
-          Min: {min.iot} (IoT) / {min["non-iot"]} (Non-IoT)
-        </p>
-        <p>
-          Std: {std.iot.toFixed(3)} (IoT) / {std["non-iot"].toFixed(3)}{" "}
-          (Non-IoT)
-        </p>
-      </div>
       <div className="statistics-container" style={{ color: "#333" }}>
         <h2>Permission Co-Occurrences</h2>
         <div className="row">
@@ -155,6 +122,9 @@ const PermissionStats = () => {
             <canvas id="nonIotChart" width="400" height="400"></canvas>
           </div>
         </div>
+      </div>
+      <div className="statistics-container">
+        {/* <PermissionCounts /> */}
       </div>
     </>
   );

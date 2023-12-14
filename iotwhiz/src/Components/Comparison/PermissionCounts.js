@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import './Comparison.css'
 
 const PermissionCounts = () => {
   const [permissionCounts, setPermissionCounts] = useState({});
@@ -33,9 +34,9 @@ const PermissionCounts = () => {
 
     return (
       <div
-        className="permission-container"
+        className="statistics-container"
         style={{
-          color: "#000",
+          color: "#333",
         }}
       >
         <h3>Permission Analysis</h3>
