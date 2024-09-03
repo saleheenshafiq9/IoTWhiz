@@ -54,6 +54,7 @@ The tool focuses on:
 ## Architecture
 
 IoTWhiz employs the **MVC (Model-View-Controller)** pattern for its architecture, ensuring a modular and maintainable codebase. It also uses the **Pipe & Filter** pattern for processing data in stages, particularly for report generation and comparison tasks.
+
 ![image](https://github.com/user-attachments/assets/6ccae7ba-9895-4ab9-92f6-4c46b0c58955)
 
 ## Methodology
@@ -70,12 +71,15 @@ The tool performs static code analysis on Android APK files to extract relevant 
 
 IoTWhiz provides an intuitive interface that allows users to:
 - Upload APKs or project folders for analysis.
+  
   ![image](https://github.com/user-attachments/assets/0ec7dcc1-e27c-4297-9545-da0c7419edbf)
 
 - View analysis dashboards with detailed insights.
+  
   ![image](https://github.com/user-attachments/assets/ba8150f0-ad6a-456e-ba8b-1d3f641a76fa)
 
 - Generate and download reports.
+  
   ![image](https://github.com/user-attachments/assets/807d01c1-fb76-4d71-99d9-a5bd2f8697cc)
 
 - Compare multiple projects to identify differences and similarities.
