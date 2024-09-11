@@ -23,15 +23,15 @@ Welcome to the IoTWhiz GitHub repository! This project is part of a Software Pro
 
 ## Motivation
 
-The rapid growth of IoT technology has introduced unique challenges, particularly in the development and security of IoT-centric Android applications. IoTWhiz aims to address these challenges by offering a comprehensive tool for analyzing and improving the quality, reliability, and security of IoT apps.
+The rapid growth of IoT technology has introduced unique challenges, particularly in the development and security of IoT-centric Android applications. IoTWhiz aims to ease the understanding of these challenges by offering a comprehensive tool for analyzing IoT apps with non-IoT apps.
 
 ## Problem Description
 
 IoTWhiz addresses the following challenges:
 1. Differentiating IoT apps from non-IoT apps based on code characteristics.
-2. Ensuring the efficiency and quality of code in IoT applications.
-3. Identifying security vulnerabilities in IoT apps.
-4. Providing insights to improve development practices.
+2. Giving insights about the efficiency and quality of code in IoT applications.
+3. Identifying security vulnerabilities and strategies in IoT apps.
+4. Understanding areas to improve development practices.
 5. Supporting research in IoT application characterization.
 
 ## Scope
